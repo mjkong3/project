@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.pet.mapper.ItemMapper">
+    <insert id="insertItem" parameterType="itemDto" useGeneratedKeys="true" keyProperty="itemNum" keyColumn="item_num">
+        INSERT INTO item(category_name, item_name, item_price, item_cnt, item_image, item_info)
+        VALUES (#{categoryName}, #{itemName}, #{itemPrice}, #{itemCnt}, #{itemImage}, #{itemInfo})
+    </insert>
+
+    <select id="itemAll" resultType="itemDto">
+        SELECT item_num, category_name, item_name, item_price, item_cnt, item_image, item_info
+        FROM item
+    </select>
+
+    <select id="selectItem" resultType="itemDto" parameterType="Long">
+        SELECT item_num, category_name, item_name, item_price, item_cnt, item_image, item_info
+        FROM item
+        WHERE item_num=#{itemNum}
+    </select>
+
+    <update id="updateCnt" parameterType="itemDto">
+        UPDATE item
+        set item_cnt = #{itemCnt}
+        WHERE item_num = #{itemNum}
+    </update>
+
+
+    <!-- 카테고리에 따라 검색 -->
+    <select id="selectCate" parameterType="string" resultType="itemDto">
+        SELECT *
+        FROM item
+        WHERE category_name = #{categoryName}
+    </select>
+
+    <!--검색어-->
+    <select id="searchItem" parameterType="string" resultType="itemDto">
+        SELECT item_num, category_name, item_name, item_price, item_cnt, item_image, item_info
+        FROM item
+        WHERE item_name LIKE CONCAT('%',#{searchWord},'%')
+    </select>
+</mapper>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>오마이댕 - 관리자페이지 (주문관리)</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/manage/manageOrder.css" rel="stylesheet" />
+</head>
+<body>
+<!-- header -->
+<div th:replace="fragments/manageHeader :: manageHeader"></div>
+
+<div class="order">
+    <h2>주문관리</h2>
+    <form class="orderSearch" action="/manageOrder" method="get">
+        <table class="search">
+            <tr>
+                <th scope="row">검색어</th>
+                <td>
+                    <select name="searchType">
+                        <option value="id">주문번호</option>
+                        <option value="custName">주문자명</option>
+                        <option value="custId">회원아이디</option>
+                        <option value="itemName">제품명</option>
+                    </select>
+                    <input type="text" name="searchKeyword" size="30">
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">기간검색</th>
+                <td>
+                    <select name="spt">
+                        <option value="order_time">주문날짜</option>
+                    </select>
+                    <label for="startDate" class="sound_only">시작일</label>
+                    <input type="text" name="startDate" value="" id="startDate" class="frm_input w80 hasDatepicker" maxlength="10">
+                    ~
+                    <label for="endDate" class="sound_only">종료일</label>
+                    <input type="text" name="endDate" value="" id="endDate" class="frm_input w80 hasDatepicker" maxlength="10">
+                    <span class="btn_group">
+                        <input type="button" onclick="search_date('startDate','endDate',this.value);" class="btn_small white" value="오늘">
+                        <input type="button" onclick="search_date('startDate','endDate',this.value);" class="btn_small white" value="어제">
+                        <input type="button" onclick="search_date('startDate','endDate',this.value);" class="btn_small white" value="일주일">
+                        <input type="button" onclick="search_date('startDate','endDate',this.value);" class="btn_small white" value="1개월">
+                        <input type="button" onclick="search_date('startDate','endDate',this.value);" class="btn_small white" value="3개월">
+                        <input type="button" onclick="search_date('startDate','endDate',this.value);" class="btn_small white" value="전체">
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">레벨검색</th>
+                <td>
+                    <label><input type="radio" name="orderStatus" value="" checked="checked"> 전체</label>
+                    <label><input type="radio" name="orderStatus" value="order"> 주문</label>
+                    <label><input type="radio" name="orderStatus" value="complete"> 완료</label>
+                    <label><input type="radio" name="orderStatus" value="cancel"> 취소</label>
+                </td>
+            </tr>
+        </table>
+        <div class="btn">
+            <input type="submit" value="검색">
+            <input type="button" value="초기화" onclick="window.location.href='/manageOrder';">
+        </div>
+    </form>
+    <div>
+        <table class="search_table">
+            <div class="btn">
+                <input type="button" value="완료">
+                <input type="button" value="주문취소">
+            </div>
+            <thead class="list">
+            <tr>
+                <th scope="col"><input type="checkbox" name="check" value="selectAll" onclick="selectAll(this)"></th>
+                <th scope="col">주문번호</th>
+                <th scope="col">제품명</th>
+                <th scope="col">주문자명</th>
+                <th scope="col">주문날짜</th>
+                <th scope="col">금액</th>
+                <th scope="col">개수</th>
+                <th scope="col">배송요청사항</th>
+                <th scope="col">주소</th>
+                <th scope="col">주문상태</th>
+            </tr>
+            </thead>
+            <tbody class="list">
+            <tr th:each="order : ${orders}">
+                <td scope="col"><input type="checkbox" name="check" th:value="${order.orderNum}"></td>
+                <td scope="col" th:text="${order.orderNum}"></td>
+                <td scope="col" th:text="${order.itemName}"></td>
+                <td scope="col" th:text="${order.custName + ' (' + order.custId + ')' }"></td>
+                <td scope="col" th:utext="${#temporals.format(order.orderDate, 'yyyy-MM-dd') + '<br>' + #temporals.format(order.orderDate, 'HH:mm:ss')}"></td>
+                <td scope="col" th:text="${order.price}"></td>
+                <td scope="col" th:text="${order.itemCnt}"></td>
+                <td scope="col" th:text="${order.orderReq}"></td>
+                <td scope="col" th:text="${order.address}"></td>
+                <td scope="col" th:text="${order.orderStatus}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+
+<script>
+    function selectAll(selectAll) {
+        const checkboxes = document.getElementsByName('check');
+        checkboxes.forEach((checkbox) => {
+            checkbox.checked = selectAll.checked;
+        })
+    }
+</script>
+</body>
+</html>

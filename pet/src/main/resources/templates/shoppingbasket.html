@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오마이댕_장바구니</title>
+    <link rel="stylesheet" href="./css/shoppingbasket.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<section class="cart">
+    <div class="cart__information">
+        <ul>
+            <li>장바구니 상품은 최대 30일간 저장됩니다.</li>
+            <li>가격, 옵션 등 정보가 변경된 경우 주문이 불가할 수 있습니다.</li>
+            <li>오늘출발 상품은 판매자 설정 시점에 따라 오늘출발 여부가 변경될 수 있으니 주문 시 꼭 다시 확인해 주시기 바랍니다.</li>
+        </ul>
+    </div>
+    <table class="cart__list">
+        <form id="cartForm" action="/pay.html" method="get">
+            <thead>
+            <tr>
+                <td><input type="checkbox" id="checkAll" onclick="checkAll()"></td>
+                <td colspan="2">상품정보</td>
+                <td>수량</td>
+                <td>상품금액</td>
+                <td>배송비</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="cart__list__detail" th:each="list : ${list}">
+                <td><input type="checkbox" name="checkBox" th:value="${list.cartItemNum}" class="chk"></td>
+                <td><img th:src="${list.itemImage}" id="img"></td>
+                <td><a href="/"></a><span class="cart__list__smartstore"> 오마이댕</span>
+                    <p>[[${list.itemName}]]</p>
+                    <span class="price">[[${list.itemPrice}]]원</span>
+                    <span style="text-decoration: line-through; color: lightgray;">[[${list.itemPrice}]]원</span>
+                </td>
+                <td class="cart__list__option">
+                    <p>상품 주문 수량 : [[${list.count}]]</p>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true" th:data-id="${list.cartItemNum}" onclick="deleteCartItem(this)">&times;</span>
+                    </button>
+                </td>
+                <td><span class="price">[[${list.itemPrice} * ${list.count}]]원</span><br>
+                    <button class="cart__list__orderbtn" >주문하기</button>
+                </td>
+                <td>무료</td>
+            </tr>
+            </tbody>
+        </form>
+    </table>
+    <div class="cart__mainbtns">
+        <button class="cart__bigorderbtn left"><a href="/">쇼핑 계속하기</a></button>
+        <button class="cart__bigorderbtn right" onclick="goToPay()">주문하기</button>
+    </div>
+</section>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("checkAll").onclick = function() {
+            if (this.checked) {
+                $("input[name=checkBox]").prop("checked", true);
+            } else {
+                $("input[name=checkBox]").prop("checked", false);
+            }
+        }
+    });
+
+    function goToPay(){
+        // 선택된 체크박스 값 수집
+        var checkedValues = [];
+        $("input[name=checkBox]:checked").each(function() {
+            checkedValues.push($(this).val());
+        });
+
+        let chk = document.querySelector(".chk");
+        if(chk == null){
+            alert("제품 등록 후 주문이 가능합니다!");
+            location.href = "/";
+            return;
+        }
+
+        // 선택된 체크박스가 없으면 알림 출력
+        if (chk != null) {
+            if(checkedValues.length === 0){
+                alert("선택한 제품이 없습니다!");
+                return;
+            }
+        }
+
+        // 수집한 값을 숨은 필드에 추가
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", "selectedItems");
+        hiddenField.setAttribute("value", checkedValues.join(","));
+        document.getElementById("cartForm").appendChild(hiddenField);
+
+        // 폼 제출
+        document.getElementById("cartForm").submit();
+
+    }
+
+
+    async function deleteCartItem(obj) {
+        let cartItemNum = obj.dataset.id;
+        let url = "/cartItem/" + cartItemNum;
+
+        try {
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                cache: 'no-cache'
+            });
+
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert("Error: " + response.statusText);
+            }
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
+    }
+</script>
+</body>
+</html>

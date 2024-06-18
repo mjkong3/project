@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오마이댕_공지</title>
+    <link rel="stylesheet" href="/css/styles2.css">
+</head>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        $(document).ready(function(){
+            let errorMessage = /*[[${errorMessage}]]*/ "";
+            if (errorMessage != null) {
+                alert(errorMessage);
+            }
+        });
+
+
+        function plusHit(noticeNum) {
+            fetch(`/notice/increaseHit/${noticeNum}`, {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('성공:', data);
+                location.reload(); // 페이지 새로고침
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</th:block>
+
+<th:block layout:fragment="css">
+    <style>
+        .table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header {
+            background-color: #f2f2f2;
+        }
+
+        .num {
+            width: 10%;
+        }
+
+        .title {
+            width: 60%;
+        }
+
+
+        tr:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: lightblue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px auto 20px;
+            display: block;
+        }
+
+        button:hover {
+            background-color: skyblue;
+        }
+
+        a {
+        text-decoration: none; /* 밑줄 없애기 */
+        }
+    </style>
+</th:block>
+
+<div th:replace="fragments/header :: header"></div>
+
+<div th:fragment="content">
+
+
+    <table class="table">
+        <tr>
+            <td colspan="4"><h2 style="text-align: center">공지사항</h2></td>
+        </tr>
+        <tr class="header" style="pointer-events: none;">
+            <td class="num">번호</td>
+            <td class="title">제목</td>
+            <td>작성날짜</td>
+            <td>조회수</td>
+        </tr>
+
+        <tr th:each="notice : ${notices}" onclick="plusHit([[${notice.noticeNum}]])" onmouseover="this.style.backgroundColor='#f5f5f5'" onmouseout="this.style.backgroundColor='transparent'">
+            <td th:text="${notice.noticeNum}">번호</td>
+            <td>
+                <a th:href="'/notice/' + ${notice.noticeNum}" class="text-dark">
+                    <div th:text="${notice.noticeTitle}">제목</div>
+                </a>
+            </td>
+            <td th:text="${notice.noticeDate}">작성날짜</td>
+            <td th:text="${notice.hit}">조회수</td>
+        </tr>
+    </table>
+
+
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+
+
+</html>

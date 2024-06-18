@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Shop Homepage - Start Bootstrap Template</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <title>오마이댕 - 사료페이지</title>
+    <link rel="stylesheet" href="/css/petfood.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm py-3 py-lg-0 px-3 px-lg-0">
+    <a href="/" class="navbar-brand ms-lg-5">
+        <h1 class="m-0 text-uppercase text-dark"><i class="bi bi-shop fs-1 text-primary me-3"></i>오마이댕 - 사료페이지</h1>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto py-0">
+            <a href="/" class="nav-item nav-link active">홈으로 가기</a>
+            <a href="review.html" class="nav-item nav-link">후기</a>
+            <a href="service.html" class="nav-item nav-link">공지사항</a>
+            <a href="./shoppingbasket.html" class="nav-item nav-link">장바구니</a>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">상품</a>
+                <div class="dropdown-menu m-0">
+                    <a href="/petfood.html" class="dropdown-item">사료</a>
+                    <a href="/pethealth.html" class="dropdown-item">건강,미용</a>
+                    <a href="/petvitamin.html" class="dropdown-item">영양제</a>
+                    <a href="/petplay.html" class="dropdown-item">외출,놀이,훈련</a>
+                </div>
+            </div>
+
+            <a href="/login.html" class="nav-item nav-link nav-contact bg-primary text-white px-5 ms-lg-5" sec:authorize="isAnonymous()">로그인</a>
+
+            <a href="/logout" class="nav-item nav-link nav-contact bg-primary text-white px-5 ms-lg-5" sec:authorize="isAuthenticated()">로그아웃</a>
+        </div>
+    </div>
+</nav>
+<div class="category-bar">
+    <div class="category-item"><a href="/petfood.html">사료</a></div>
+    <div class="category-item"><a href="/pethealth.html">건강, 미용</a></div>
+    <div class="category-item"><a href="/petvitamin.html">영양제</a></div>
+    <div class="category-item"><a href="/petplay.html">외출, 놀이, 훈련</a></div>
+</div>
+
+
+<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center" id="items">
+    <!-- 첫번째 -->
+    <th:block th:each="food : ${food}">
+        <div class="col mb-5">
+            <div class="card h-100">
+                <!-- Product image-->
+                <img class="card-img-top" th:src="${food.itemImage}" alt="" />
+                <!-- Product details-->
+                <div class="card-body p-4">
+                    <div class="text-center">
+                        <!-- Product name-->
+                        <h5 class="fw-bolder" th:text="${food.itemName}"></h5>
+                        <!-- Product reviews-->
+                        <div class="d-flex justify-content-center small text-warning mb-2">
+                            <div class="bi-star-fill"></div>
+                            <div class="bi-star-fill"></div>
+                            <div class="bi-star-fill"></div>
+                        </div>
+                        <!-- Product price-->
+                        <div style="font-size: 25px; color: red; font-weight: bold; " th:text="${food.itemPrice} + '원'"></div>
+                    </div>
+                </div>
+                <!-- Product actions-->
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" th:href="'/item/' + ${food.itemNum}">주문하기</a></div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</div>
+</div>
+
+</section>
+
+        <br><br><br><br>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; 오마이댕</p></div>
+            <div>
+
+            </div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+
+</body>
+</html>
